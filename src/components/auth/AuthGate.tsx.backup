@@ -1,0 +1,60 @@
+// File: src/components/auth/AuthGate.tsx
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { app } from '@/lib/firebase/config';
+import { Loader2 } from 'lucide-react';
+
+export default function AuthGate({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!app) {
+      console.error("[AuthGate] Firebase app is not initialized!");
+      setLoading(false);
+      // Potentially redirect to an error page
+      return;
+    }
+    const auth = getAuth(app);
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in
+        if (pathname === '/login' || pathname === '/auth') {
+          router.replace('/dashboard');
+        } else {
+          setLoading(false);
+        }
+      } else {
+        // User is not logged in
+        if (pathname !== '/login' && pathname !== '/auth') {
+          router.replace('/login');
+        } else {
+          setLoading(false);
+        }
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [router, pathname]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-[#0f1b2e]">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
+      </div>
+    );
+  }
+
+  // Do not render children on login or auth pages, as redirection is handled
+  if (pathname === '/login' || pathname === '/auth') {
+    return null;
+  }
+  
+  return <>{children}</>;
+}

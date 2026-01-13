@@ -1,0 +1,172 @@
+/* File: src/app/globals.css */
+@import 'react-day-picker/dist/style.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 217 33% 20%; /* #203047 */
+    --foreground: 220 14% 96%;
+
+    --card: 217 33% 23%;
+    --card-foreground: 220 14% 96%;
+
+    --popover: 220 30% 15%;
+    --popover-foreground: 220 14% 96%;
+
+    --primary: 220 48% 21%; /* #1A294D */
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 215 28% 25%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 215 28% 25%;
+    --muted-foreground: 215 15% 65%;
+
+    --accent: 283 86% 64%; /* #BE54F3 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 215 28% 21%;
+    --input: 215 28% 21%;
+    --ring: 283 86% 64%;
+
+    --radius: 0.8rem;
+  }
+ 
+  .dark {
+    --background: 217 33% 20%;
+    --foreground: 220 14% 96%;
+
+    --card: 217 33% 23%;
+    --card-foreground: 220 14% 96%;
+
+    --popover: 220 30% 15%;
+    --popover-foreground: 220 14% 96%;
+
+    --primary: 220 48% 21%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 215 28% 25%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 215 28% 25%;
+    --muted-foreground: 215 15% 65%;
+
+    --accent: 283 86% 64%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 215 28% 21%;
+    --input: 215 28% 21%;
+    --ring: 283 86% 64%;
+
+    --radius: 0.8rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-[#0f1b2e] text-foreground font-body antialiased;
+  }
+}
+
+@layer utilities {
+  .bg-noise {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><filter id="a" x="0" y="0" width="100%" height="100%"><feTurbulence baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23a)"/></svg>');
+    opacity: 0.02;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 1px hsl(var(--ring)), 0 0 2.5px hsl(var(--ring));
+    }
+    50% {
+      box-shadow: 0 0 3px hsl(var(--ring)), 0 0 4.5px hsl(var(--ring));
+    }
+  }
+
+  .focus-glow:focus,
+  .focus-glow:focus-visible {
+    outline: none;
+    animation: glow-pulse 2.2s ease-in-out infinite;
+  }
+}
+
+
+/* Gemini Button Animations */
+@keyframes gemini-gradient-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.gemini-glow-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 90deg at 50% 50%,
+    #BE54F3 0%,
+    #4DA3FF 50%,
+    #BE54F3 100%
+  );
+  filter: blur(8px);
+  opacity: 0.9;
+  animation: gemini-gradient-rotate 4s linear infinite;
+  pointer-events: none;
+}
+
+
+.gemini-button-gradient-element {
+  animation: gemini-gradient-rotate 4s linear infinite;
+}
+
+/* Vertical scroll for alerts */
+@keyframes vertical-scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%); /* Needs duplicated content */
+  }
+}
+
+.animate-vertical-scroll {
+  animation: vertical-scroll 20s linear infinite;
+}
+
+@keyframes urgent-pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-urgent-pulse {
+  animation: urgent-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 1s linear infinite;
+}
