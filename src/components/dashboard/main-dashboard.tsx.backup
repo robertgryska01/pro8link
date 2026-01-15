@@ -16,7 +16,7 @@ import { MoreScreen } from '../more/more-screen';
 import { GeminiAiScreen } from '../gemini/gemini-ai-screen';
 import { GeminiAiHeader } from '../gemini/gemini-ai-header';
 import { ContainerSelectorScreen } from '../inventory/container-selector-screen';
-import { inventoryState } from '@/lib/google/sync';
+import { inventoryItems } from '../inventory/inventory-placeholder-data';
 import { AccountScreen } from '../more/account-screen';
 import { ExpensesScreen } from '../more/expenses-screen';
 import { ReportsScreen } from '../more/reports-screen';
@@ -149,7 +149,7 @@ export function MainDashboard() {
 
   if (isContainerSelectorOpen) {
     return <ContainerSelectorScreen 
-      products={inventoryState.products}
+      inventoryItems={inventoryItems}
       onClose={() => setIsContainerSelectorOpen(false)}
       onSelectContainer={handleSelectContainer}
     />

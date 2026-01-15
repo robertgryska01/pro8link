@@ -48,14 +48,14 @@ export default function LoginPage() {
   useEffect(() => {
     // Check if already authenticated
     if (state.isSignedIn) {
-      console.log('✅ Already authenticated, redirecting to dashboard');
+      console.log('[LoginPage] Already authenticated, redirecting to dashboard');
       router.replace('/dashboard');
       return;
     }
 
     // Listen for auth success
     const handleAuthSuccess = () => {
-      console.log('🎉 Auth success - redirecting to dashboard');
+      console.log('[LoginPage] Auth success - redirecting to dashboard');
       router.replace('/dashboard');
     };
 
@@ -89,7 +89,7 @@ export default function LoginPage() {
       return;
     }
 
-    console.log('🔐 Initiating Google Sign-In...');
+    console.log('[LoginPage] Initiating Google Sign-In...');
     setIsLoading(true);
     setError(null);
 
@@ -97,7 +97,7 @@ export default function LoginPage() {
       // Request access token with consent screen
       tokenClient.requestAccessToken({ prompt: 'consent' });
     } catch (err: any) {
-      console.error('❌ Error during sign-in:', err);
+      console.error('[LoginPage] Error during sign-in:', err);
       setError(err.message || 'Failed to sign in. Please try again.');
       setIsLoading(false);
     }

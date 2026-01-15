@@ -1,24 +1,31 @@
-// File: src/lib/google/config.ts
-// Google API Configuration
+// File: src/lib/google/config.example.ts
+// Google API Configuration Template
+// 
+// INSTRUKCJA:
+// 1. Skopiuj ten plik jako config.ts
+// 2. Wypełnij poniższe wartości swoimi credentials
+// 3. NIE commituj pliku config.ts do repozytorium!
 
 export const GOOGLE_CONFIG = {
   // Spreadsheet ID from URL: https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/edit
-  SPREADSHEET_ID: '1KLTdKlpnLCVgVAjo9kineOnVCpNPZ_c_HvOcOW7saqg',
+  SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE',
   
   // Apps Script ID for calling syncAll() function
   // Find in: Extensions → Apps Script → Project Settings → Script ID
-  SCRIPT_ID: '1iyMStuSiNOfDisBqdGpjMnckwskJ-Ri6qQFEWsSZcMHr4eS2kWcsRnNB',
+  SCRIPT_ID: 'YOUR_SCRIPT_ID_HERE',
   
   // Google Cloud Project API Key
-  API_KEY: 'AIzaSyALNOloKXlZ_WQb1bk7x05ysyiwpYlcKlE',
+  // Get from: https://console.cloud.google.com/apis/credentials
+  API_KEY: 'YOUR_API_KEY_HERE',
   
   // OAuth 2.0 Client ID
-  CLIENT_ID: '822212014818-301v982avhjn3liqeaqb3did8r5u1da4.apps.googleusercontent.com',
+  // Get from: https://console.cloud.google.com/apis/credentials
+  CLIENT_ID: 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com',
   
-  // API Discovery Docs
+  // API Discovery Docs (no need to change)
   DISCOVERY_DOCS: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
   
-  // OAuth Scopes
+  // OAuth Scopes (no need to change)
   SCOPES: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/script.projects',
 };
 

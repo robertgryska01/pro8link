@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/sheet';
 import { NotificationsScreen } from './notifications-screen';
 import { Button } from '../ui/button';
-import { triggerSyncAll } from '@/lib/google/sync';
 
 interface GlobalHeaderProps {
   opacity: number;
@@ -49,17 +48,11 @@ export function GlobalHeader({ opacity }: GlobalHeaderProps) {
     setIsClient(true);
   }, []);
 
-  const handleSync = async () => {
+  const handleSync = () => {
     setIsSyncing(true);
-    try {
-      await triggerSyncAll();
-      console.log('✅ Sync completed successfully');
-    } catch (error) {
-      console.error('❌ Sync failed:', error);
-      // Still turn off the loading state even if sync fails
-    } finally {
-      setIsSyncing(false);
-    }
+    setTimeout(() => {
+        setIsSyncing(false);
+    }, 2000); // Simulate a 2-second sync process
   };
 
   return (

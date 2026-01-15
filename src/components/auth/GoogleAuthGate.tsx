@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { initGoogleAuth, state, signOut } from '@/lib/google/auth';
+import { initGoogleAuth, state, signOut, hasValidToken } from '@/lib/google/auth';
 import { Loader2 } from 'lucide-react';
 
 interface GoogleAuthGateProps {
@@ -13,65 +13,72 @@ interface GoogleAuthGateProps {
 export function GoogleAuthGate({ children }: GoogleAuthGateProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  
+  // Use lazy initialization - function runs ONCE on mount, not every render
+  const [isAuthenticated, setIsAuthenticated] = useState(() => hasValidToken());
+  const [isLoading, setIsLoading] = useState(() => !hasValidToken());
 
+  // Initialize Google Auth ONCE on mount
   useEffect(() => {
-    console.log('🚀 GoogleAuthGate: Starting initialization...');
-    
-    // Initialize Google Auth on mount
+    console.log('[GoogleAuthGate] Starting initialization...');
     initGoogleAuth();
+  }, []);
+
+  // Handle authentication state changes
+  useEffect(() => {
+    // If we already know user is authenticated from localStorage, skip waiting
+    if (isAuthenticated) {
+      console.log('[GoogleAuthGate] Valid token found - skipping wait');
+      return;
+    }
 
     // Listen for auth success
     const handleAuthSuccess = () => {
-      console.log('🎉 GoogleAuthGate: Auth success event received');
+      console.log('[GoogleAuthGate] Auth success event received');
       setIsAuthenticated(true);
       setIsLoading(false);
-      
-      // Redirect to dashboard if on login page
-      if (pathname === '/login') {
-        router.replace('/dashboard');
-      }
     };
 
     window.addEventListener('google-auth-success', handleAuthSuccess);
 
-    // Check if already authenticated
+    // Check if authenticated via API initialization
     const checkAuth = setInterval(() => {
       if (state.isSignedIn) {
-        console.log('✅ GoogleAuthGate: User is signed in');
+        console.log('[GoogleAuthGate] User signed in via API');
         setIsAuthenticated(true);
         setIsLoading(false);
         clearInterval(checkAuth);
-        
-        // Redirect to dashboard if on login page
-        if (pathname === '/login') {
-          router.replace('/dashboard');
-        }
       }
     }, 100);
 
-    // Timeout after 10 seconds
+    // Shorter timeout - 3 seconds instead of 10
     const timeout = setTimeout(() => {
-      console.log('⏱️ GoogleAuthGate: Initialization timeout reached');
+      console.log('[GoogleAuthGate] Initialization timeout (3s)');
       setIsLoading(false);
       clearInterval(checkAuth);
-      
-      // Redirect to login if not authenticated
-      if (!state.isSignedIn && pathname !== '/login') {
-        console.log('🔒 Not authenticated - redirecting to /login');
-        router.replace('/login');
-      }
-    }, 10000);
+    }, 3000);
 
     return () => {
       window.removeEventListener('google-auth-success', handleAuthSuccess);
       clearInterval(checkAuth);
       clearTimeout(timeout);
     };
-  }, [router, pathname]);
+  }, [isAuthenticated]);
 
-  // Show loading while initializing
+  // Handle redirects based on authentication state and pathname
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (isAuthenticated && pathname === '/login') {
+      console.log('[GoogleAuthGate] Authenticated - redirecting to /dashboard');
+      router.replace('/dashboard');
+    } else if (!isAuthenticated && pathname !== '/login') {
+      console.log('[GoogleAuthGate] Not authenticated - redirecting to /login');
+      router.replace('/login');
+    }
+  }, [isAuthenticated, isLoading, pathname, router]);
+
+  // Show loading only if we don't have a valid token and we're still initializing
   if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-[#0f1b2e]">
@@ -80,15 +87,13 @@ export function GoogleAuthGate({ children }: GoogleAuthGateProps) {
     );
   }
 
-  // If on login page, always render (let login page handle its own logic)
+  // If on login page, always render
   if (pathname === '/login') {
     return <>{children}</>;
   }
 
-  // If not authenticated and not on login page, redirect to login
+  // If not authenticated, redirect (will show briefly before redirect)
   if (!isAuthenticated) {
-    console.log('🔒 GoogleAuthGate: User NOT authenticated - redirecting to login');
-    router.replace('/login');
     return (
       <div className="flex h-screen w-full items-center justify-center bg-[#0f1b2e]">
         <Loader2 className="h-8 w-8 animate-spin text-white" />
@@ -97,7 +102,6 @@ export function GoogleAuthGate({ children }: GoogleAuthGateProps) {
   }
 
   // User is authenticated - render the app
-  console.log('✅ GoogleAuthGate: User authenticated - rendering app');
   return <>{children}</>;
 }
 
